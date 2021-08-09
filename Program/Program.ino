@@ -1,6 +1,8 @@
+#define red 3
+#define green 10
+
 String Rcvd_string = "";
-String Prnt_string = "";
-char *Prnt_string_arr[10];
+char *Rcvd_string_arr[10];
 char TokenNr = 0;
 
 char FindTokens(String str){
@@ -10,7 +12,7 @@ char FindTokens(String str){
   str.toCharArray(string, str.length()+1);
   ptr = strtok(string, " ");
   while(ptr != NULL){
-    Prnt_string_arr[ctr] = ptr;
+    Rcvd_string_arr[ctr] = ptr;
     ctr++;
     ptr = strtok(NULL, " ");
   }
@@ -18,6 +20,9 @@ char FindTokens(String str){
 }
 
 void setup() {
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  
   Serial.begin(9600);
   Serial.println("Hello!");
 }
@@ -26,8 +31,21 @@ void loop (){
   if (Serial.available()>0){
     Rcvd_string = Serial.readStringUntil('\n');
     TokenNr = FindTokens(Rcvd_string);
-    for(unsigned char i = 0; i<TokenNr; i++){
-      Serial.println(Prnt_string_arr[i]);
+    if (strcmp(Rcvd_string_arr[0], "red") == 0){
+      if (strcmp(Rcvd_string_arr[1], "on") == 0){
+        digitalWrite(red, HIGH);
+      }
+      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
+        digitalWrite(red, LOW);
+      }
+    }
+    else if (strcmp(Rcvd_string_arr[0], "green") == 0){
+      if (strcmp(Rcvd_string_arr[1], "on") == 0){
+        digitalWrite(green, HIGH);
+      }
+      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
+        digitalWrite(green, LOW);
+      }
     }
   }
 }
