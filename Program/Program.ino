@@ -3,104 +3,61 @@
 #define red 3
 #define green 10
 
-String Rcvd_string = "";
-char *Rcvd_string_arr[10];
-char TokenNr = 0;
-
-char FindTokens(String str){
-  char string[20];
-  char *ptr = NULL;
-  char ctr = 0;
-  str.toCharArray(string, str.length()+1);
-  ptr = strtok(string, " ");
-  while(ptr != NULL){
-    Rcvd_string_arr[ctr] = ptr;
-    ctr++;
-    ptr = strtok(NULL, " ");
-  }
-  return ctr;
-}
+String Rcvd_string;
+char Rcvd_char_arr[20];
+unsigned char i;
 
 void setup() {
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
   
   Serial.begin(9600);
+  Serial.setTimeout(-1);
   Serial.println("Hello!");
 }
 
 void loop (){
-  if (Serial.available()>0){
+  if (Serial.available() > 0){
     Rcvd_string = Serial.readStringUntil('\n');
-    TokenNr = FindTokens(Rcvd_string);
-    if (strcmp(Rcvd_string_arr[0], "red") == 0){
-      if (strcmp(Rcvd_string_arr[1], "on") == 0){
-        digitalWrite(red, HIGH);
+    Rcvd_string.toCharArray(Rcvd_char_arr, Rcvd_string.length()+1);
+    DecodeMsg(Rcvd_char_arr);
+    if (asToken[0].eType == KEYWORD){
+      if (asToken[0].uValue.eKeyword == ID){
+        Serial.println("Arduino");
       }
-      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
-        digitalWrite(red, LOW);
+      else if(asToken[0].uValue.eKeyword == LED){
+        if(asToken[1].eType == KEYWORD && asToken[1].uValue.eKeyword == ON){
+          if(asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 0){
+            digitalWrite(red, HIGH);
+          }
+          else if (asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 1){
+            digitalWrite(green, HIGH);
+          }
+          else{
+            Serial.println("unknown command");
+          }
+        }
+        else if(asToken[1].eType == KEYWORD && asToken[1].uValue.eKeyword == OFF){
+          if(asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 0){
+            digitalWrite(red, LOW);
+          }
+          else if (asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 1){
+            digitalWrite(green, LOW);
+          }
+          else{
+            Serial.println("unknown command");
+          }
+        }
+        else{
+          Serial.println("unknown command");
+        }
       }
-    }
-    else if (strcmp(Rcvd_string_arr[0], "green") == 0){
-      if (strcmp(Rcvd_string_arr[1], "on") == 0){
-        digitalWrite(green, HIGH);
-      }
-      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
-        digitalWrite(green, LOW);
-      }
-    }
-  }
-}
-=======
-#define red 3
-#define green 10
-
-String Rcvd_string = "";
-char *Rcvd_string_arr[10];
-char TokenNr = 0;
-
-char FindTokens(String str){
-  char string[20];
-  char *ptr = NULL;
-  char ctr = 0;
-  str.toCharArray(string, str.length()+1);
-  ptr = strtok(string, " ");
-  while(ptr != NULL){
-    Rcvd_string_arr[ctr] = ptr;
-    ctr++;
-    ptr = strtok(NULL, " ");
-  }
-  return ctr;
-}
-
-void setup() {
-  pinMode(red, OUTPUT);
-  pinMode(green, OUTPUT);
-  
-  Serial.begin(9600);
-  Serial.println("Hello!");
-}
-
-void loop (){
-  if (Serial.available()>0){
-    Rcvd_string = Serial.readStringUntil('\n');
-    TokenNr = FindTokens(Rcvd_string);
-    if (strcmp(Rcvd_string_arr[0], "red") == 0){
-      if (strcmp(Rcvd_string_arr[1], "on") == 0){
-        digitalWrite(red, HIGH);
-      }
-      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
-        digitalWrite(red, LOW);
+      else{
+        Serial.println("unknown command");
       }
     }
-    else if (strcmp(Rcvd_string_arr[0], "green") == 0){
-      if (strcmp(Rcvd_string_arr[1], "on") == 0){
-        digitalWrite(green, HIGH);
-      }
-      else if (strcmp(Rcvd_string_arr[1], "off") == 0){
-        digitalWrite(green, LOW);
-      }
+    else{
+      Serial.println("unknown command");
     }
   }
 }
->>>>>>> ec0aada05b1ff1eb581cff47ba49e4e28180c423

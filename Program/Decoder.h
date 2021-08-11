@@ -1,7 +1,7 @@
 #define MAX_TOKEN_NR 3
 #define MAX_KEYWORD_LTH 9
 #define MAX_KEYWORD_NR 4
-#define NULL 0
+//#define NULL 0
 
 enum TokenType {KEYWORD, NUMBER, STRING};
 
