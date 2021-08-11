@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+#include "Decoder.h"
+
 #define red 3
 #define green 10
 

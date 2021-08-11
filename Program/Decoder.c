@@ -6,22 +6,13 @@ struct Token asToken[MAX_TOKEN_NR];
 
 struct Keyword asKeywordList[MAX_KEYWORD_NR] =
 {
-	{LEDON, "ledon"},
-	{LEDOFF, "ledoff"}	
+	{LED, "led"},
+	{ON, "on"},
+	{OFF, "off"},
+	{ID, "id"}
 };
 
 unsigned char ucTokenNr = 0;
-
-void ReplaceCharactersInString (char pcString[], char cOldChar, char cNewChar){
-
-	unsigned char ucCharacterCounter;
-
-	for (ucCharacterCounter = 0; pcString[ucCharacterCounter]; ucCharacterCounter++){
-		if (pcString[ucCharacterCounter]==cOldChar){
-			pcString[ucCharacterCounter]=cNewChar;
-		}
-	}
-}
 
 unsigned char IsNumber(char* pcStr){
 	unsigned char CharacterCounter = 0;
@@ -37,7 +28,7 @@ unsigned char FindTokens(char *pcStr){
   char *ptr = NULL;
   unsigned char ctr = 0;
   ptr = strtok(pcStr, " ");
-  while(ptr != NULL){
+  while(ptr != NULL && ctr<MAX_TOKEN_NR){
     asToken[ctr].uValue.pcString = ptr;
     ctr++;
     ptr = strtok(NULL, " ");
@@ -67,14 +58,13 @@ void DecodeTokens(){
 	
 	for(ucTokenCounter =0; ucTokenCounter<ucTokenNr; ucTokenCounter++){
 		psCurrentToken = &asToken[ucTokenCounter];
-		if(0 == IsNumber(psCurrentToken->uValue.pcString)){
-			psCurrentToken->eType = NUMBER;
-			sscanf(psCurrentToken->uValue.pcString, "%d", &uiTokenValue);
-			psCurrentToken->uValue.uiValue = uiTokenValue;
-		}
-		else if(0 == StringToKeyword(psCurrentToken->uValue.pcString, &eTokenCode)){
+		if(0 == StringToKeyword(psCurrentToken->uValue.pcString, &eTokenCode)){
 			psCurrentToken->eType = KEYWORD;
 			psCurrentToken->uValue.eKeyword = eTokenCode;
+		}
+		else if (sscanf(psCurrentToken->uValue.pcString, "%d", &uiTokenValue) == 1){
+			psCurrentToken->eType = NUMBER;
+			psCurrentToken->uValue.uiValue = uiTokenValue;
 		}
 		else{
 			psCurrentToken->eType = STRING;
@@ -83,7 +73,10 @@ void DecodeTokens(){
 }
 
 void DecodeMsg(char *pcString){
+	char *ptr = pcString;
 	ucTokenNr = FindTokens(pcString);
-	ReplaceCharactersInString(pcString, ' ', NULL);
+	while((ptr = strchr(ptr, ' ')) != NULL){
+		*ptr++ = NULL;
+	}
 	DecodeTokens();
 }
