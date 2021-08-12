@@ -5,7 +5,8 @@
 
 String Rcvd_string;
 char Rcvd_char_arr[20];
-unsigned char i;
+unsigned char TokenNumber;
+extern struct Token asToken[MAX_TOKEN_NR];
 
 void setup() {
   pinMode(red, OUTPUT);
@@ -17,47 +18,28 @@ void setup() {
 }
 
 void loop (){
-  if (Serial.available() > 0){
-    Rcvd_string = Serial.readStringUntil('\n');
-    Rcvd_string.toCharArray(Rcvd_char_arr, Rcvd_string.length()+1);
-    DecodeMsg(Rcvd_char_arr);
-    if (asToken[0].eType == KEYWORD){
-      if (asToken[0].uValue.eKeyword == ID){
+  Rcvd_string = Serial.readStringUntil('\n');
+  Rcvd_string.toCharArray(Rcvd_char_arr, Rcvd_string.length()+1);
+  TokenNumber = DecodeMsg(Rcvd_char_arr);
+  if (asToken[0].eType == KEYWORD && TokenNumber > 0){
+    switch(asToken[0].uValue.eKeyword){
+      case ID:
         Serial.println("Arduino");
-      }
-      else if(asToken[0].uValue.eKeyword == LED){
-        if(asToken[1].eType == KEYWORD && asToken[1].uValue.eKeyword == ON){
-          if(asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 0){
-            digitalWrite(red, HIGH);
-          }
-          else if (asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 1){
-            digitalWrite(green, HIGH);
-          }
-          else{
-            Serial.println("unknown command");
-          }
+        break;
+      case LED:
+        if(asToken[1].uValue.uiValue == 0){
+          digitalWrite(red, digitalRead(red)==HIGH ? LOW : HIGH);
         }
-        else if(asToken[1].eType == KEYWORD && asToken[1].uValue.eKeyword == OFF){
-          if(asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 0){
-            digitalWrite(red, LOW);
-          }
-          else if (asToken[2].eType == NUMBER && asToken[2].uValue.uiValue == 1){
-            digitalWrite(green, LOW);
-          }
-          else{
-            Serial.println("unknown command");
-          }
+        else if (asToken[1].uValue.uiValue == 1){
+          digitalWrite(green, digitalRead(green)==HIGH ? LOW : HIGH);
         }
-        else{
-          Serial.println("unknown command");
-        }
-      }
-      else{
+        break;
+      default:
         Serial.println("unknown command");
-      }
+        break;
     }
-    else{
-      Serial.println("unknown command");
-    }
+  }
+  else{
+    Serial.println("unknown command");
   }
 }

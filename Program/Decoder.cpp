@@ -7,8 +7,6 @@ struct Token asToken[MAX_TOKEN_NR];
 struct Keyword asKeywordList[MAX_KEYWORD_NR] =
 {
 	{LED, "led"},
-	{ON, "on"},
-	{OFF, "off"},
 	{ID, "id"}
 };
 
@@ -62,11 +60,9 @@ void DecodeTokens(){
 	}
 }
 
-void DecodeMsg(char *pcString){
+unsigned char DecodeMsg(char *pcString){
 	char *ptr = pcString;
 	ucTokenNr = FindTokens(pcString);
-	while((ptr = strchr(ptr, ' ')) != NULL){
-		*ptr++ = 0;
-	}
 	DecodeTokens();
+  return ucTokenNr;
 }
