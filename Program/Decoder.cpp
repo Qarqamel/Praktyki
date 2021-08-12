@@ -7,7 +7,9 @@ struct Token asToken[MAX_TOKEN_NR];
 struct Keyword asKeywordList[MAX_KEYWORD_NR] =
 {
 	{LED, "led"},
-	{ID, "id"}
+	{ID, "id"},
+  {TEMPVAL, "tempval"},
+  {TEMPID, "tempid"}
 };
 
 unsigned char ucTokenNr = 0;
@@ -16,7 +18,7 @@ unsigned char FindTokens(char *pcStr){
   char *ptr = NULL;
   unsigned char ctr = 0;
   ptr = strtok(pcStr, " ");
-  while(ptr != NULL && ctr<MAX_TOKEN_NR){
+  while((ptr != NULL) && (ctr<MAX_TOKEN_NR)){
     asToken[ctr].uValue.pcString = ptr;
     ctr++;
     ptr = strtok(NULL, " ");
