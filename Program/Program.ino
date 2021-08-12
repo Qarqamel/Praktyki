@@ -33,9 +33,11 @@ void loop (){
         else if (asToken[1].uValue.uiValue == 1){
           digitalWrite(green, digitalRead(green)==HIGH ? LOW : HIGH);
         }
+        else{
+          Serial.println("unknown command");
+        }
         break;
       default:
-        Serial.println("unknown command");
         break;
     }
   }
