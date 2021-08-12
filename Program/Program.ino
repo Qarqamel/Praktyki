@@ -4,7 +4,6 @@
 
 #define RED 3
 #define GREEN 10
-#define THERMOMETER
 
 String Rcvd_string;
 char Rcvd_char_arr[20];
