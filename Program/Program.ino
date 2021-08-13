@@ -2,18 +2,25 @@
 #include <DallasTemperature.h>
 #include "Decoder.h"
 
+#define ID_BYTES 8
+
 String Rcvd_string;
 char Rcvd_char_arr[20];
-unsigned char therm_id[8];
-char id_buffer[2];
-unsigned char TokenNumber;
-extern struct Token asToken[];
+unsigned char therm_id[ID_BYTES];
+char id_string_buffer[ID_BYTES*2];
 
-OneWire oneWire0(A0);
-DallasTemperature sensor0(&oneWire0);
+OneWire oneWire(A0);
+DallasTemperature sensor(&oneWire);
+
+void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_array[], char hex_string[]){
+  for(unsigned char i = 0; i<byte_array_size; i++){
+    sprintf(hex_string+(2*i), "%.2X", byte_array[i]);
+  }
+  hex_string[byte_array_size*2] = NULL;
+}
 
 void setup() {
-  sensor0.begin();
+  sensor.begin();
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
@@ -24,12 +31,10 @@ void loop (){
   
   Rcvd_string = Serial.readStringUntil('\n');
   Serial.print(Rcvd_string + ";");
-  sensor0.getAddress(therm_id, 0);
-  for(unsigned char i = 1; i < 7; i++){
-    sprintf(id_buffer, "%.2X", therm_id[i]);
-    Serial.print(id_buffer);
-  }
-  sensor0.requestTemperatures();
+  sensor.getAddress(therm_id, 0);
+  byte_array_to_hex_string(6, therm_id+1, id_string_buffer);
+  Serial.print(id_string_buffer);
+  sensor.requestTemperatures();
   Serial.print(" ");
-  Serial.println(sensor0.getTempCByIndex(0));
+  Serial.println(sensor.getTempCByIndex(0));
 }
