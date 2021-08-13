@@ -5,6 +5,7 @@
 #define RED 3
 #define GREEN 10
 #define ID_BYTES 8
+#define TERM_NR 2
 
 String Rcvd_string;
 char Rcvd_char_arr[20];
@@ -13,8 +14,7 @@ extern struct Token asToken[];
 
 OneWire oneWire0(A0);
 OneWire oneWire1(A1);
-DallasTemperature sensor0(&oneWire0);
-DallasTemperature sensor1(&oneWire1);
+DallasTemperature sensor[TERM_NR];
 
 void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_array[], char hex_string[]){
   for(unsigned char i = 0; i<byte_array_size; i++){
@@ -27,8 +27,12 @@ void setup() {
   pinMode(RED, OUTPUT);
   pinMode(GREEN, OUTPUT);
 
-  sensor0.begin();
-  sensor1.begin();
+  sensor[0].setOneWire(&oneWire0);
+  sensor[1].setOneWire(&oneWire1);
+
+  for(unsigned char i; i<TERM_NR; i++){
+    sensor[i].begin();
+  }
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
@@ -58,20 +62,19 @@ void loop (){
         }
         break;
       case TEMPVAL:
-        sensor0.requestTemperatures();
-        Serial.println(sensor0.getTempCByIndex(0));
-        sensor1.requestTemperatures();
-        Serial.println(sensor1.getTempCByIndex(0));
+        for(unsigned char i = 0; i < TERM_NR; i++){
+          sensor[i].requestTemperatures();
+          Serial.println(sensor[i].getTempCByIndex(0));
+        }
         break;
       case TEMPID:
         unsigned char therm_id[ID_BYTES];
         char id_string_buffer[2*ID_BYTES+1];
-        sensor1.getAddress(therm_id, 0);
-        byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
-        Serial.println(id_string_buffer);
-        sensor0.getAddress(therm_id, 0);
-        byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
-        Serial.println(id_string_buffer);
+        for(unsigned char i = 0; i < TERM_NR; i++){
+          sensor[i].getAddress(therm_id, 0);
+          byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
+          Serial.println(id_string_buffer);
+        }
         break;
       default:
         Serial.println("unhanced_command");
