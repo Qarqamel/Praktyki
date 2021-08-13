@@ -4,11 +4,10 @@
 
 #define RED 3
 #define GREEN 10
+#define ID_BYTES 8
 
 String Rcvd_string;
 char Rcvd_char_arr[20];
-unsigned char therm_id[8];
-char id_buffer[16];
 unsigned char TokenNumber;
 extern struct Token asToken[];
 
@@ -17,11 +16,11 @@ OneWire oneWire1(A1);
 DallasTemperature sensor0(&oneWire0);
 DallasTemperature sensor1(&oneWire1);
 
-void byte_array_to_hex_string(unsigned char byte_array[], char hex_string[]){
-  for(unsigned char i = 0; i<8; i++){
+void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_array[], char hex_string[]){
+  for(unsigned char i = 0; i<byte_array_size; i++){
     sprintf(hex_string+(2*i), "%.2X", byte_array[i]);
   }
-  //hex_string[16] = NULL;
+  hex_string[byte_array_size*2] = NULL;
 }
 
 void setup() {
@@ -65,12 +64,14 @@ void loop (){
         Serial.println(sensor1.getTempCByIndex(0));
         break;
       case TEMPID:
+        unsigned char therm_id[ID_BYTES];
+        char id_string_buffer[2*ID_BYTES+1];
         sensor1.getAddress(therm_id, 0);
-        byte_array_to_hex_string(therm_id, id_buffer);
-        Serial.println(id_buffer);
+        byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
+        Serial.println(id_string_buffer);
         sensor0.getAddress(therm_id, 0);
-        byte_array_to_hex_string(therm_id, id_buffer);
-        Serial.println(id_buffer);
+        byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
+        Serial.println(id_string_buffer);
         break;
       default:
         Serial.println("unhanced_command");
