@@ -7,7 +7,9 @@ struct Token asToken[MAX_TOKEN_NR];
 struct Keyword asKeywordList[MAX_KEYWORD_NR] =
 {
 	{LED, "led"},
-	{ID, "id"}
+	{ID, "id"},
+  {TEMPID, "tempid"},
+  {TEMPVAL, "tempval"}
 };
 
 unsigned char ucTokenNr = 0;

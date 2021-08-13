@@ -1,11 +1,11 @@
 #define MAX_TOKEN_NR 2
 #define MAX_KEYWORD_LTH 8
-#define MAX_KEYWORD_NR 2
+#define MAX_KEYWORD_NR 4
 //#define NULL 0
 
 enum TokenType {KEYWORD, NUMBER, STRING};
 
-enum KeywordCode {LED, ID};
+enum KeywordCode {LED, ID, TEMPID, TEMPVAL};
 
 union TokenValue
 {
