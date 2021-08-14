@@ -1,11 +1,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "Decoder.h"
 
 #define ID_BYTES 8
 
 String Rcvd_string;
-char Rcvd_char_arr[20];
 unsigned char therm_id[ID_BYTES];
 char id_string_buffer[ID_BYTES*2];
 
