@@ -3,11 +3,6 @@
 #define RED 3
 #define GREEN 10
 
-String Rcvd_string;
-char Rcvd_char_arr[20];
-unsigned char TokenNumber;
-extern struct Token asToken[];
-
 void setup() {
   pinMode(RED, OUTPUT);
   pinMode(GREEN, OUTPUT);
@@ -18,6 +13,12 @@ void setup() {
 }
 
 void loop (){
+
+  String Rcvd_string;
+  char Rcvd_char_arr[20];
+  unsigned char TokenNumber;
+  extern struct Token asToken[];
+  
   Rcvd_string = Serial.readStringUntil('\n');
   Rcvd_string.toCharArray(Rcvd_char_arr, Rcvd_string.length()+1);
   TokenNumber = DecodeMsg(Rcvd_char_arr);
