@@ -3,10 +3,6 @@
 
 #define ID_BYTES 8
 
-String Rcvd_string;
-unsigned char therm_id[ID_BYTES];
-char id_string_buffer[ID_BYTES*2];
-
 OneWire oneWire(A0);
 DallasTemperature sensor(&oneWire);
 
@@ -26,6 +22,10 @@ void setup() {
 }
 
 void loop (){
+
+  String Rcvd_string;
+  unsigned char therm_id[ID_BYTES];
+  char id_string_buffer[ID_BYTES*2];
   
   Rcvd_string = Serial.readStringUntil('\n');
   Serial.print(Rcvd_string + ";");
