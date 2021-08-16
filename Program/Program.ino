@@ -2,8 +2,6 @@
 #include <DallasTemperature.h>
 #include "Decoder.h"
 
-#define RED 3
-#define GREEN 10
 #define ID_BYTES 8
 #define TERM_NR 3
 
@@ -18,8 +16,6 @@ void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_
 }
 
 void setup() {
-  pinMode(RED, OUTPUT);
-  pinMode(GREEN, OUTPUT);
 
   sensors.setOneWire(&oneWire);
 
@@ -27,7 +23,6 @@ void setup() {
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
-  Serial.println("Hello!");
 }
 
 void loop (){
@@ -43,7 +38,7 @@ void loop (){
   if ((asToken[0].eType == KEYWORD) && (TokenNumber > 0)){
     switch(asToken[0].uValue.eKeyword){
       case ID:
-        Serial.println("Arduino");
+        Serial.print("Arduino\n");
         break;
       case TEMPVAL:
         sensors.requestTemperatures();
@@ -65,11 +60,11 @@ void loop (){
          Serial.print('\n');
         break;
       default:
-        Serial.println("unhanced_command");
+        Serial.print("unhanced_command\n");
         break;
     }
   }
   else{
-    Serial.println("unknown_command");
+    Serial.print("unknown_command\n");
   }
 }
