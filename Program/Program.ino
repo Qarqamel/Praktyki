@@ -17,9 +17,15 @@ void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_
 
 void setup() {
 
+  DeviceAddress sens_addr;
+
   sensors.setOneWire(&oneWire);
 
   sensors.begin();
+  for(unsigned char i = 0; i < TERM_NR; i++){
+    sensors.getAddress(sens_addr, i);
+    sensors.setResolution(sens_addr, 9);
+  }
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
