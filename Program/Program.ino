@@ -22,7 +22,7 @@ void setup() {
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
-  Serial.println("Hello!");
+  //Serial.println("Hello!");
 }
 
 void loop (){
