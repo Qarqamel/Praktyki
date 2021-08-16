@@ -48,8 +48,10 @@ void loop (){
       case TEMPVAL:
         sensors.requestTemperatures();
         for(unsigned char i = 0; i < TERM_NR; i++){
-          Serial.println(sensors.getTempCByIndex(i));
+          Serial.print(sensors.getTempCByIndex(i));
+          Serial.print(' ');
         }
+          Serial.print('\n');
         break;
       case TEMPID:
         unsigned char therm_id[ID_BYTES];
@@ -57,8 +59,10 @@ void loop (){
         for(unsigned char i = 0; i < TERM_NR; i++){
           sensors.getAddress(therm_id, i);
           byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
-          Serial.println(id_string_buffer);
+          Serial.print(id_string_buffer);
+          Serial.print(' ');
         }
+         Serial.print('\n');
         break;
       default:
         Serial.println("unhanced_command");
