@@ -5,16 +5,10 @@
 #define RED 3
 #define GREEN 10
 #define ID_BYTES 8
-#define TERM_NR 2
+#define TERM_NR 3
 
-String Rcvd_string;
-char Rcvd_char_arr[20];
-unsigned char TokenNumber;
-extern struct Token asToken[];
-
-OneWire oneWire0(A0);
-OneWire oneWire1(A1);
-DallasTemperature sensor[TERM_NR];
+OneWire oneWire(A0);
+DallasTemperature sensors;
 
 void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_array[], char hex_string[]){
   for(unsigned char i = 0; i<byte_array_size; i++){
@@ -27,12 +21,9 @@ void setup() {
   pinMode(RED, OUTPUT);
   pinMode(GREEN, OUTPUT);
 
-  sensor[0].setOneWire(&oneWire0);
-  sensor[1].setOneWire(&oneWire1);
+  sensors.setOneWire(&oneWire);
 
-  for(unsigned char i; i<TERM_NR; i++){
-    sensor[i].begin();
-  }
+  sensors.begin();
     
   Serial.begin(9600);
   Serial.setTimeout(-1);
@@ -40,6 +31,12 @@ void setup() {
 }
 
 void loop (){
+  
+  String Rcvd_string;
+  char Rcvd_char_arr[20];
+  unsigned char TokenNumber;
+  extern struct Token asToken[];
+  
   Rcvd_string = Serial.readStringUntil('\n');
   Rcvd_string.toCharArray(Rcvd_char_arr, Rcvd_string.length()+1);
   TokenNumber = DecodeMsg(Rcvd_char_arr);
@@ -48,30 +45,17 @@ void loop (){
       case ID:
         Serial.println("Arduino");
         break;
-      case LED:
-        switch (asToken[1].uValue.uiValue){
-          case 0:
-            digitalWrite(RED, !digitalRead(RED));
-            break;
-          case 1:
-            digitalWrite(GREEN, !digitalRead(GREEN));
-            break;
-          default:
-            Serial.println("wrong_led_number");
-            break;
-        }
-        break;
       case TEMPVAL:
+        sensors.requestTemperatures();
         for(unsigned char i = 0; i < TERM_NR; i++){
-          sensor[i].requestTemperatures();
-          Serial.println(sensor[i].getTempCByIndex(0));
+          Serial.println(sensors.getTempCByIndex(i));
         }
         break;
       case TEMPID:
         unsigned char therm_id[ID_BYTES];
         char id_string_buffer[2*ID_BYTES+1];
         for(unsigned char i = 0; i < TERM_NR; i++){
-          sensor[i].getAddress(therm_id, 0);
+          sensors.getAddress(therm_id, i);
           byte_array_to_hex_string(ID_BYTES, therm_id, id_string_buffer);
           Serial.println(id_string_buffer);
         }
