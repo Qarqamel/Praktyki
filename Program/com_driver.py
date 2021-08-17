@@ -2,21 +2,26 @@ import serial
 import time
 import matplotlib.pyplot as plt
 import numpy as np
+import keyboard
 
-serialPort = serial.Serial(port="COM4", baudrate=9600,bytesize = 8, 
-                             timeout = None, stopbits=serial.STOPBITS_ONE)
+#serialPort = serial.Serial(port="COM4", baudrate=9600,bytesize = 8, 
+#                             timeout = None, stopbits=serial.STOPBITS_ONE)
 
-y = []
+with serial.Serial(port="COM4", baudrate=9600,bytesize = 8, 
+                   timeout = None, stopbits=serial.STOPBITS_ONE) as serialPort:
 
-time.sleep(5)
-
-for i in range(10):
+    y = []
+    
+    time.sleep(5)
+    
+    while(keyboard.read_key()!='q'):
         serialPort.write('tempval\n'.encode('utf-8'))
-        temp_buff = serialPort.read_until('\n'.encode('utf-8'))
-        y.append(temp_buff.split(' '.encode('utf-8'), 2))
-        for j in range(len(y[-1])):
-            y[-1][j] = float(y[-1][j])
-        time.sleep(1)
+        temp_buff = serialPort.readline().strip(' \n'.encode('utf-8'))
+        single_read_buff = []
+        for val in temp_buff.split():
+            val = float(val)
+            single_read_buff.append(val)
+        y.append(single_read_buff)
         
-plt.plot(range(len(y)), np.array(y), '.')
-serialPort.close()
+    plt.plot(np.array(y), '.')
+    
