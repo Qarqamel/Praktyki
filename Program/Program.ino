@@ -23,16 +23,21 @@ void setup() {
 
 void loop (){
 
-  String Rcvd_string;
   unsigned char therm_id[ID_BYTES];
   char id_string_buffer[ID_BYTES*2];
-  
-  Rcvd_string = Serial.readStringUntil('\n');
-  Serial.print(Rcvd_string + ";");
-  sensor.getAddress(therm_id, 0);
-  byte_array_to_hex_string(6, therm_id+1, id_string_buffer);
-  Serial.print(id_string_buffer);
-  sensor.requestTemperatures();
-  Serial.print(" ");
-  Serial.println(sensor.getTempCByIndex(0));
+  char Rcvd_char[1];
+
+  Serial.readBytes(Rcvd_char, 1);
+  if(Rcvd_char != '\n'){
+    Serial.print(Rcvd_char);
+  }
+  else{
+    Serial.print(";");
+    sensor.getAddress(therm_id, 0);
+    byte_array_to_hex_string(6, therm_id+1, id_string_buffer);
+    Serial.print(id_string_buffer);
+    sensor.requestTemperatures();
+    Serial.print(" ");
+    Serial.println(sensor.getTempCByIndex(0));
+  }
 }
