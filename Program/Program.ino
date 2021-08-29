@@ -1,6 +1,4 @@
-void setup() {
-  //sensor.begin();
-    
+void setup() {    
   Serial.begin(9600);
   Serial.setTimeout(-1);
 }
