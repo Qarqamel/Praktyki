@@ -27,12 +27,22 @@ void setup() {
 
 void loop (){
 
-  char Rcvd_char[1];
+  char Rcvd_char;
   
-  Serial.readBytes(Rcvd_char, 1);
-  if(Rcvd_char[0] != '\n'){
-    ThermMode = (Rcvd_char[0] == 't' ? TEMP : (Rcvd_char[0] == 'i' ? ID : ThermMode));
-    Serial.print(Rcvd_char[0]);
+  Serial.readBytes(&Rcvd_char, 1);
+  switch(Rcvd_char){
+    case 't':
+      ThermMode = TEMP;
+      break;
+    case 'i':
+      ThermMode = ID;
+      break;
+    default:
+      break;
+  }
+  if(Rcvd_char != '\n'){
+    //ThermMode = (Rcvd_char == 't' ? TEMP : (Rcvd_char == 'i' ? ID : ThermMode));
+    Serial.write(&Rcvd_char, 1);
   }
   else{    
     switch(ThermMode){
