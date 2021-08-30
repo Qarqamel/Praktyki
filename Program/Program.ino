@@ -3,13 +3,10 @@
 
 #define ID_BYTES 8
 
-enum Mode {ID, TEMP};
-
 OneWire oneWire(A0);
 DallasTemperature sensor(&oneWire);
 char id_string_buffer[ID_BYTES*2+1];
 float temp_buffer;
-enum Mode ThermMode = ID;
 
 void setup() {
   unsigned char therm_id[ID_BYTES];
@@ -26,41 +23,34 @@ void setup() {
 }
 
 void loop (){
-
-  char Rcvd_char;
-  
-  Serial.readBytes(&Rcvd_char, 1);
-  switch(Rcvd_char){
-    case 't':
-      ThermMode = TEMP;
+   char rx_char, mode;
+   
+   // odczyt trybu
+   Serial.readBytes(&mode, 1);
+   Serial.write(&mode, 1);
+   
+   // forwardowanie obcych pomiarów
+   while (true) {
+      Serial.readBytes(&rx_char, 1);
+      if (rx_char == '\n') break;
+      Serial.write(&rx_char, 1);
+   }
+   
+   // dołożenie swojego
+   Serial.print(";");
+   switch(mode){
+      case 'i':      
+      Serial.println(id_string_buffer);
       break;
-    case 'i':
-      ThermMode = ID;
+      case 't':
+      Serial.println(temp_buffer);
+      sensor.requestTemperatures();
+      temp_buffer = sensor.getTempCByIndex(0);
       break;
-    default:
-      break;
-  }
-  if(Rcvd_char != '\n'){
-    //ThermMode = (Rcvd_char == 't' ? TEMP : (Rcvd_char == 'i' ? ID : ThermMode));
-    Serial.write(&Rcvd_char, 1);
-  }
-  else{    
-    switch(ThermMode){
-      case ID:
-        Serial.print(";");
-        Serial.println(id_string_buffer);
-        break;
-      case TEMP:
-        Serial.print(";");
-        Serial.println(temp_buffer);
-        sensor.requestTemperatures();
-        temp_buffer = sensor.getTempCByIndex(0);
-        break;
       default:
-        Serial.println("nomode");
-        break;
-    }
-  }
+      Serial.println("nomode");
+      break;
+   }    
 }
 
 void byte_array_to_hex_string(unsigned char byte_array_size, unsigned char byte_array[], char hex_string[]){
