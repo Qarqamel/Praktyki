@@ -1,0 +1,2 @@
+a potem niech Pan zamiast licznika da czas w milisekundach - jest funbkcja w arduino do tego
+uwaga może trzeba bedzie zwiekszyć predkośc uarta do string może być dluzszy i sie nie zmiesci w czaasie

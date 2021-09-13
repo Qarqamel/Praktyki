@@ -1,0 +1,1 @@
+teraz proszę zrobić tak aby pokazywało różnicę między liczbami w linijkach

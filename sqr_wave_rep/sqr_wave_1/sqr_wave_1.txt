@@ -1,0 +1,17 @@
+[13:37] Mirosław Żołądź
+    Pierwsza sparawa, troche zmieniłem temat pracy task żeby bardziej pasował do tego co potrzebuje w moim projekcie ale nie różni się to zbyutnio od tego co Pan u mnie dotąd robił i być może RP pico PIO też tam wykozystamy.
+(Konkrety jutro.)
+Dlatego proszę wpisać dzisiejsze godziny do arkusza.
+​[13:39] Mirosław Żołądź
+    Proszę wziać da ardujino mini.
+Do jednego wgrać program, który będzie generował PWM-a o czestotliwoąsi 100Hz (wypełnienie nieważne)
+Sprawdzić oscyloskopem
+​[13:41] Mirosław Żołądź
+    Potem proszę wziąć drugie arduino mini i wgrać program który na każdą zmianę stanu z 0->1 wyśle po serialu liczbę zakonczopną znakiem terminatora.
+Liczby powinny się inkrementować od zera,
+Do podpinania callbacka do zmiany pinu jest w arduina odpowiedia funkcja.
+
+​[13:42] Mirosław Żołądź
+    Potem prosze połączyć oba arduino jedną linią tak żeby licznik był wysyłany 100/sekundę
+​[13:42] Mirosław Żołądź
+    to tyle narazie
